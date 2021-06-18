@@ -1,0 +1,28 @@
+{% for produit in produits %}
+    <tr>
+
+        <td>{{ produit.nomP }}</td>
+        <td>{{ produit.prix }}</td>
+        <td>{{ produit.quantite }}</td>
+        <td>{{ produit.categorie.nomCat }}</td>
+        <td>{{ produit.description }}</td>
+        <td><img width="100px" src="{{ asset('uploads/images/' ~ produit.image) }}"></td>
+        <td>
+            <div class="row">
+
+                <a href="{{ path('produit_delete', {'id':produit.id}) }}" class="btn btn-danger btn-sm col-4">
+                    <i class="fas fa-trash"></i>
+                </a>
+
+                <a href="{{ path('produit_edit', {'id':produit.id}) }}" class="btn btn-primary btn-sm col-4">
+                    <i class="fas fa-book"></i>
+                </a>
+
+                <a href="{{ path('produit_indexB') }}" class="btn btn-warning btn-sm col-4">
+                    <i class="fas fa-check"></i>
+                </a>
+
+            </div>
+        </td>
+    </tr>
+{% endfor %}

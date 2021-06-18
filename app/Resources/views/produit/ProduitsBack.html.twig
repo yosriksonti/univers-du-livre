@@ -1,0 +1,182 @@
+{% extends 'base2.html.twig' %}
+{% block body %}
+    <!-- end: sidebar -->
+    <style>
+        .popUpUpdateClass{
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+        .popupContent{
+            background-color: #fefefe;
+            margin: 15% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+    </style>
+
+    <section role="main" class="content-body">
+    <header class="page-header">
+        <h2>Gestion Produits</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="index.html">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Tables</span></li>
+                <li><span>Basic</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+
+    <section role="main" class="content-body">
+
+        <!-- start: page -->
+
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="margin-bottom: 30px">Ajouter Un Produit</button>
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ajouter Un Produit</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    {{ form_start(form) }}
+                    <div class="modal-body">
+                        <h5>Nom produit</h5>
+                        {{ form_row(form.nomP, {'attr': {'class': 'form-control'}}) }}
+
+                        <h5>Prix produit</h5>
+                        {{ form_row(form.prix, {'attr': {'class': 'form-control'}}) }}
+
+                        <h5>Quantite </h5>
+                        {{ form_row(form.quantite, {'attr': {'class': 'form-control'}}) }}
+
+                        <h5>Description</h5>
+                        {{ form_row(form.description, {'attr': {'class': 'form-control'}}) }}
+
+                        <h5>Categorie</h5>
+                        {{ form_row(form.categorie, {'attr': {'class': 'form-control'}}) }}
+
+                        <h5>Image</h5>
+                        {{ form_row(form.imageFile)}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-primary">Confirmer</button>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="row">
+            <div class="col-md-8">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <div class="panel-actions">
+                            <a href="#" class="fa fa-caret-down"></a>
+                            <a href="#" class="fa fa-times"></a>
+                        </div>
+
+                        <h2 class="panel-title">Produits</h2>
+                    </header>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table mb-none">
+                                <form class="w-search">
+                                    <div class="sidebar-search">
+                                        <div class="input-group custom-search-form">
+                                            <input type="text" id="search" class="form-control" placeholder="Search">
+                                        </div>
+                                        <!-- /input-group -->
+                                    </div>
+                                    <ul class="nav" id="side-menu">
+                                        <li>
+                                            <ul style="background-color: #0b0b0b" class="nav " id="entitiesNav">
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </form>
+                                <thead>
+                                <tr>
+                                    <th>Nom produit</th>
+                                    <th>Prix produit</th>
+                                    <th>Quantite</th>
+                                    <th>Categorie</th>
+                                    <th>Description</th>
+                                    <th>image</th>
+                                    <th>Actions</th>
+                                </tr>
+                                </thead>
+                                <tbody id="all">
+                                {% include 'produit/RechercheProduitajax.html.twig' %}
+                                </tbody>
+                                <tbody id="search">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+    </div>
+
+</section>
+    <script src="{{ asset('theme/js/jquery.js') }}"></script>
+    <script
+            src="{{asset('https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js')}}">
+    </script>
+    <script>
+        $( document ).ready(function() {
+            var currentRequest = null;
+            $("#search").keyup(function(e){
+                /* La variable value va prendre la valeur insérer dans le champ de texte
+                afin d’effectuer la recherche */
+                var value = $(this).val();
+                if(currentRequest != null) {
+                    currentRequest.abort();
+                }
+
+                /* Ajax est lancé lors du remplissage du champ texte dont l’id est
+                « search » pour faire la recherche */
+                currentRequest = $.ajax({
+
+                    url : "{{ path('ajaxsearch') }}",
+                    type : 'GET',
+                    data: {
+                        'searchValue' : value
+                    },
+
+                    success : function(retour)
+                    {
+                        $('#all').html(retour);
+
+                    },
+                });
+                return false;
+            });
+    </script>
+
+
+
+{% endblock body %}

@@ -1,0 +1,25 @@
+{% extends 'base2.html.twig' %}
+
+{% block body %}
+
+    <table>
+        <tr>
+            <td>
+                <h1>Categorie edit</h1>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                {{ form_start(edit_form) }}
+                {{ form_widget(edit_form,{'attr': {'class': 'form-control'}})}}
+                <br>
+                <input class="btn btn-primary" type="submit" value="Edit" />
+                {{ form_end(edit_form) }}
+            </td>
+        </tr>
+    </table>
+
+
+    <br>
+
+{% endblock %}
